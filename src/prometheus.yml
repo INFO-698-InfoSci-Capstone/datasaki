@@ -1,0 +1,11 @@
+global:
+  scrape_interval: 15s  # How frequently to scrape metrics from targets
+  scrape_timeout: 10s   # Timeout for scraping metrics
+
+scrape_configs:
+  - job_name: 'fastapi'  # Job name for identifying the set of metrics
+
+    static_configs:
+      - targets: ['web:8000']  # Replace 'web' with the name of your FastAPI service in docker-compose.yml and '8000' with the port your application exposes metrics on
+
+    metrics_path: /metrics  # The path where Prometheus will scrape metrics from

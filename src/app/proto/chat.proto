@@ -1,0 +1,20 @@
+// Filename: chat.proto
+
+syntax = "proto3";
+
+package chat;
+
+message UserQuery {
+  string question = 1;
+  string system_prompt = 2;
+  string user_id = 3;
+  optional string industry = 4;
+}
+
+message ChatResponse {
+  string response = 1;
+}
+
+service ChatService {
+  rpc ChatWithGroq (UserQuery) returns (ChatResponse);
+}

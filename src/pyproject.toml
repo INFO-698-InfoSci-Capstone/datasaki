@@ -1,0 +1,44 @@
+[tool.poetry]
+name = "datasaki"
+version = "0.1.0"
+description = "Datasaki project"
+authors = ["Kapil Jain <kapiljain1989@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11.9"
+fastapi = "^0.112.2"
+uvicorn = "^0.30.6"
+sqlalchemy = "^2.0.32"
+alembic = "^1.13.2"
+pydantic = "^2.8.2"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+email-validator = "^2.2.0"
+pandas = "^2.2.2"
+prometheus-client = "^0.20.0"
+gunicorn = "^23.0.0"
+python-dotenv = "^1.0.1"
+pydantic-settings = "^2.4.0"
+psycopg2 = "^2.9.9"
+python-multipart = "^0.0.9"
+pyjwt = "^2.9.0"
+bcrypt = "4.0.1"
+lmdb = "^1.5.1"
+psycopg2-binary = "^2.9.9"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+strsimpy = "^0.2.1"
+scipy = "^1.14.1"
+six = "^1.16.0"
+statsmodels = "^0.14.2"
+plotly = "^5.24.1"
+grpcio = "^1.67.0"
+grpcio-tools = "^1.67.0"
+scikit-learn = "^1.6.0"
+langchain = "^0.3.9"
+langchain-groq = "^0.2.1"
+matplotlib = "3.9.0"
+seaborn = "^0.13.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,136 @@
+syntax = "proto3";
+
+package ml_models;
+
+message DataInstance {
+    int32 tenant_id = 1;
+    int32 dataset_id = 2;
+}
+
+message LinearRegressionParams {
+  bool fit_intercept = 1;  // Whether to calculate the intercept (default = true)
+  bool copy_X = 2;         // Whether to copy X (default = true)
+  int32 n_jobs = 3;        // Number of jobs for computation (default = None)
+  bool positive = 4;       // Force coefficients to be positive (default = false)
+}
+
+message RidgeParams {
+  double alpha = 1;        // Regularization strength
+  bool fit_intercept = 2;  // Whether to calculate the intercept (default = true)
+  bool copy_X = 3;         // Whether to copy X (default = true)
+  bool positive = 4;       // Force coefficients to be positive (default = false)
+  string solver = 5;       // Solver to use (e.g., 'auto', 'svd', 'cholesky', etc.)
+}
+
+message LogisticParams {
+    optional string penalty = 1; // Penalty type ('l1', 'l2', 'elasticnet', 'none')
+    optional bool dual = 2; // Dual formulation
+    optional float tol = 3; // Tolerance for stopping criteria
+    optional float C = 4; // Inverse of regularization strength
+    optional bool fit_intercept = 5; // Add intercept
+    optional float intercept_scaling = 6; // Scaling for intercept
+    optional string class_weight = 7; // Class weight
+    optional int32 max_iter = 8; // Maximum iterations
+    optional string solver = 9; // Optimization algorithm
+    optional string multi_class = 10; // Multiclass strategy
+    optional bool warm_start = 11; // Warm start flag
+    optional int32 n_jobs = 12; // Number of jobs
+}
+
+message TrainTestSplitRequest {
+    optional float test_size = 1; // Proportion of the dataset for the test split, float between 0.0 and 1.0, or absolute int.
+    optional float train_size = 2; // Proportion of the dataset for the train split, float between 0.0 and 1.0, or absolute int.
+    optional int32 random_state = 3; // Controls shuffling for reproducible output, can be int, RandomState instance, or None.
+    optional bool shuffle = 4; // Whether to shuffle the data before splitting, default is true.
+    repeated string stratify = 5; // Class labels for stratified splitting, array-like, default is None.
+}
+
+message TrainTestSplitResponse {
+    string status = 1;
+}
+
+message TrainRequest {
+  DataInstance data = 1;
+  optional string target = 2;
+  optional string features = 3;
+  oneof model_params {
+    LinearRegressionParams linear_regression_params = 4;
+    RidgeParams ridge_params = 5;
+    LogisticParams logistic_params = 6;
+  }
+  repeated double sample_weight = 7;
+  TrainTestSplitRequest test_train_split_params = 8;
+}
+
+message TrainResponse {
+  repeated double coef = 1;          // Estimated coefficients for the model
+  double intercept = 2;      // Independent term in the model
+}
+
+message PredictRequest {
+  repeated double feature = 1;  // Input features for making predictions
+}
+
+
+message PredictResponse {
+  repeated double predicted_values = 1;  // Predicted values based on the input features
+}
+
+
+message ScoreRequest {
+    optional ConfusionMatrixRequest confusion_matrix = 1 ;
+    optional F1ScoreRequest f1_score = 2 ;
+    optional CrossValScoreRequest cv_score = 3;
+}
+
+message ScoreResponse {
+  optional ConfusionMatrixResponse confusion_matrix = 1;
+  optional F1ScoreResponse f1_score = 2;
+  optional CrossValScoreResponse cv_score = 3;
+
+}
+
+message ConfusionMatrixRequest {
+  repeated string labels = 1;      // List of labels (optional)
+  repeated double sample_weight = 2; // Sample weights (optional)
+  optional string normalize = 3;            // Normalization option (optional)
+}
+
+message ConfusionMatrixResponse {
+  repeated double matrix = 1;
+}
+
+message F1ScoreRequest {
+  repeated string labels = 1;        // List of labels (optional)
+  optional double pos_label = 2;              // Class to report if average='binary'
+  optional string average = 3;                // Averaging method
+  repeated double sample_weight = 4;  // Sample weights (optional)
+  optional string zero_division = 5;          // Value to return for zero division
+}
+
+// Message to hold the output data of the F1 score calculation
+message F1ScoreResponse {
+   double f1_score = 1;      // F1 score of the positive class or averaged scores
+}
+
+message CrossValScoreRequest {
+  repeated double groups = 1;
+  optional string scoring = 2;
+  optional int32 cv = 3;
+  optional int32 n_jobs = 4;
+  optional int32 verbose = 5;
+  map<string, string> fit_params = 6;
+  map<string, string> params = 7;
+  optional string pre_dispatch = 8;
+  optional string error_score = 9;
+}
+
+message CrossValScoreResponse {
+  repeated double scores = 1;
+}
+
+service MLModelService {
+  rpc Train (TrainRequest) returns (TrainResponse);
+  rpc Predict (PredictRequest) returns (PredictResponse);
+  rpc Score (ScoreRequest) returns (ScoreResponse);
+}
